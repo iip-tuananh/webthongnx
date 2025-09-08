@@ -1090,7 +1090,7 @@
                 $scope.currentCateId = cateId;
                 $.ajax({
                     type: 'GET',
-                    url: "/get-post-by-cate/?cate_id="+cateId,
+                    url: "/get-post-by-cate?cate_id="+cateId,
                     headers: {
                         'X-CSRF-TOKEN': CSRF_TOKEN
                     },
