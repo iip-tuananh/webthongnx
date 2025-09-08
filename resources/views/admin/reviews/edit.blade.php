@@ -61,6 +61,7 @@
                 },
                 complete: function () {
                     $scope.loading.submit = false;
+                    $scope.form.clearImage();
                     $scope.$applyAsync();
                 },
             });
