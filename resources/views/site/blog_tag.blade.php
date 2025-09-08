@@ -9,6 +9,77 @@
 
 
 @section('content')
+    <style>
+        :root{
+            --brand-orange: #EE4110;   /* chỉnh theo màu nút của bạn */
+            --brand-orange-strong: #C7360E;
+            --brand-orange-weak: #FFE3D7;
+            --ink-dark: #2c2c2c;
+            --white: #fff;
+        }
+
+
+        /* Overlay badge trên ảnh */
+        .post-badge{
+            position:absolute; top:10px; left:10px;
+            display:inline-flex; align-items:center; gap:8px;
+            padding:6px 10px; border-radius:999px;
+            font-size:14px; font-weight:700; line-height:1;
+            box-shadow: 0 6px 14px rgba(0,0,0,.12);
+            backdrop-filter: blur(2px);
+        }
+        .post-badge i{ font-size:12px; }
+
+        /* FREE: nền sáng, viền cam nhạt – hợp tin tức */
+        .post-badge.is-free{
+            background: #0da306;
+            color: #fff;
+            border: 1px dashed rgba(238, 65, 16, .45);
+        }
+
+        /* PAID: nền cam đậm + chữ trắng */
+        .post-badge.is-paid{
+            background: linear-gradient(180deg, var(--brand-orange), #ff6a2f);
+            color: var(--white);
+            border: none;
+            text-shadow: 0 1px 0 rgba(0,0,0,.15);
+        }
+
+
+    </style>
+
+    <style>
+        .post-widget-item .post-widget-item-media{ position:relative; }
+        .post-widget-item .pw-badge{
+            position:absolute; left:6px; bottom:6px;
+            display:inline-flex; align-items:center; gap:6px;
+            padding:3px 6px; border-radius:999px;
+            font-size:10px; font-weight:700; line-height:1;
+            white-space:nowrap; box-shadow:0 4px 10px rgba(0,0,0,.12);
+            backdrop-filter: blur(2px);
+        }
+        .post-widget-item .pw-badge i{ font-size:10px; }
+
+        /* Free */
+        .post-widget-item .pw-badge.is-free{
+            background: #0da306;
+            color: #fff;
+            border: 1px dashed rgba(238,65,16,.45);
+        }
+
+        /* Paid */
+        .post-widget-item .pw-badge.is-paid{
+            background: linear-gradient(180deg, var(--brand-orange), #ff6a2f);
+            color: var(--white);
+            border:none; text-shadow:0 1px 0 rgba(0,0,0,.15);
+        }
+
+        /* Nếu quá chật ở màn nhỏ: chỉ hiện icon, ẩn text */
+        @media (max-width: 420px){
+            .post-widget-item .pw-badge{ padding:3px 4px; }
+            .post-widget-item .pw-badge span{ display:none; } /* nếu bạn để text trong <span> */
+        }
+    </style>
     <div class="content">
         <div class="breadcrumbs-header fl-wrap">
             <div class="container">
@@ -53,11 +124,27 @@
                                 @foreach($posts as $post)
                                     <div class="list-post fl-wrap">
                                         <div class="list-post-media">
-                                            <a href="post-single.html">
+                                            <a href="{{ route('front.blogs', $post->category->slug ?? '') }}">
                                                 <div class="bg-wrap">
                                                     <div class="bg" data-bg="{{ $post->image->path ?? '' }}"></div>
                                                 </div>
                                             </a>
+
+
+                                            <span class="post-badge {{ ($post->type ?? 1) == 1 ? 'is-free' : 'is-paid' }}">
+                                                                <i class="fas {{ ($post->type ?? 1) == 1 ? 'fa-newspaper' : (! $post->access ? 'fa-lock' : '') }}"></i>
+                                                                @if(($post->type ?? 1) == 1)
+                                                    Miễn phí
+                                                @else
+                                                    @if(! $post->access)
+                                                        {{ isset($post->price) && $post->price > 0
+                                                                           ? number_format($post->price, 0, ',', '.') . '₫'
+                                                                               : 'Liên hệ' }}
+                                                    @else
+                                                        Đã sở hữu
+                                                    @endif
+                                                @endif
+                                                            </span>
                                             <span class="post-media_title">&copy; Image Copyrights Title</span>
                                         </div>
                                         <div class="list-post-content">
@@ -160,6 +247,23 @@
                                                             <div class="post-widget-item fl-wrap">
                                                                 <div class="post-widget-item-media">
                                                                     <a href="{{ route('front.blogDetail', $popularPost->slug) }}"><img src="{{ $popularPost->image->path ?? '' }}"  alt=""></a>
+
+
+                                                                    <span class="pw-badge {{ ($popularPost->type ?? 1) == 1 ? 'is-free' : 'is-paid' }}">
+                                                                <i class="fas {{ ($popularPost->type ?? 1) == 1 ? 'fa-newspaper' : (! $popularPost->access ? 'fa-lock' : '') }}"></i>
+                                                                @if(($popularPost->type ?? 1) == 1)
+                                                                            Miễn phí
+                                                                        @else
+                                                                            @if(! $popularPost->access)
+                                                                                {{ isset($popularPost->price) && $popularPost->price > 0
+                                                                                                   ? number_format($popularPost->price, 0, ',', '.') . '₫'
+                                                                                                       : 'Liên hệ' }}
+                                                                            @else
+                                                                                Đã sở hữu
+                                                                            @endif
+                                                                        @endif
+                                                            </span>
+
                                                                 </div>
                                                                 <div class="post-widget-item-content">
                                                                     <h4><a href="{{ route('front.blogDetail', $popularPost->slug) }}">{{ $popularPost->name }}</a></h4>
@@ -183,6 +287,22 @@
                                                             <div class="post-widget-item fl-wrap">
                                                                 <div class="post-widget-item-media">
                                                                     <a href="{{ route('front.blogDetail', $postRecent->slug) }}"><img src="{{ $postRecent->image->path ?? '' }}"  alt=""></a>
+
+
+                                                                    <span class="pw-badge {{ ($postRecent->type ?? 1) == 1 ? 'is-free' : 'is-paid' }}">
+                                                                <i class="fas {{ ($postRecent->type ?? 1) == 1 ? 'fa-newspaper' : (! $postRecent->access ? 'fa-lock' : '') }}"></i>
+                                                                @if(($postRecent->type ?? 1) == 1)
+                                                                            Miễn phí
+                                                                        @else
+                                                                            @if(! $postRecent->access)
+                                                                                {{ isset($postRecent->price) && $postRecent->price > 0
+                                                                                                   ? number_format($postRecent->price, 0, ',', '.') . '₫'
+                                                                                                       : 'Liên hệ' }}
+                                                                            @else
+                                                                                Đã sở hữu
+                                                                            @endif
+                                                                        @endif
+                                                            </span>
                                                                 </div>
                                                                 <div class="post-widget-item-content">
                                                                     <h4><a href="{{ route('front.blogDetail', $postRecent->slug) }}">{{ $postRecent->name }}</a></h4>
