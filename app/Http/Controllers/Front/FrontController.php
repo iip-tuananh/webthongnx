@@ -1667,6 +1667,6 @@ class FrontController extends Controller
     }
 
     public function clearData() {
-        File::query()->where('model_type', About::class)->delete();
+        File::query()->where('model_type', Review::class)->delete();
     }
 }
