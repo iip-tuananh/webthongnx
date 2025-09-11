@@ -72,6 +72,8 @@ class Kernel extends HttpKernel
         'localeViewPath'          => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationViewPath::class,
 
         'auth.customer.home' => \App\Http\Middleware\RedirectIfCustomerUnauthenticated::class,
+
+        'customer.active' => \App\Http\Middleware\EnsureCustomerIsActive::class,
     ];
 
     /**

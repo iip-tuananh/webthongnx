@@ -1,7 +1,7 @@
 <?php
 Route::group([
     'namespace'  => 'Front',
-    'middleware' => ['auth.customer.home'],
+    'middleware' => ['auth.customer.home', 'customer.active'],
 ], function () {
     Route::get('/profile', 'CustomerController@getProfile') ->name('front.getProfile');
     Route::post('/update-profile', 'CustomerController@updateProfile') ->name('front.updateProfile');

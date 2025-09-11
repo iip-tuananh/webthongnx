@@ -22,7 +22,7 @@ class Customer extends Authenticatable implements JWTSubject
             'type' => 'success'
         ],
         [
-            'id' => 0,
+            'id' => 2,
             'name' => 'Khóa',
             'type' => 'danger'
         ]
